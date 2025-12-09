@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NEW YEAR'S AWARD</title>
+
+<style>
+body {
+    background: #f0f0f0;
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    font-size: 42px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+/* BLING EFFECT */
+.bling {
+    animation: bling 1.2s infinite alternate;
+}
+@keyframes bling {
+    0% { filter: brightness(1) drop-shadow(0 0 3px gold); }
+    50% { filter: brightness(1.4) drop-shadow(0 0 10px gold); }
+    100% { filter: brightness(1) drop-shadow(0 0 3px gold); }
+}
+
+/* GOLD TEXT BLING */
+.bling-gold {
+    color: gold;
+    animation: textGold 1.2s infinite;
+}
+@keyframes textGold {
+    0% { text-shadow: 0 0 5px #ffd700, 0 0 10px #ffcc00; }
+    50% { text-shadow: 0 0 10px #fff27a, 0 0 20px #ffd700; }
+    100% { text-shadow: 0 0 5px #ffd700, 0 0 10px #ffcc00; }
+}
+
+/* RED TEXT BLING */
+.bling-red {
+    color: red;
+    animation: textRed 1.4s infinite;
+}
+@keyframes textRed {
+    0% { text-shadow: 0 0 5px #ff4d4d, 0 0 10px #ff1a1a; }
+    50% { text-shadow: 0 0 12px #ff8080, 0 0 22px #ff3333; }
+    100% { text-shadow: 0 0 5px #ff4d4d, 0 0 10px #ff1a1a; }
+}
+
+/* SHINE EFFECT */
+.shine {
+    position: relative;
+    overflow: hidden;
+}
+.shine::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0.7) 50%,
+        rgba(255,255,255,0) 100%
+    );
+    transform: skewX(-25deg);
+    animation: shineMove 2.5s infinite;
+}
+@keyframes shineMove {
+    0% { left: -150%; }
+    50% { left: 150%; }
+    100% { left: 150%; }
+}
+
+/* IMAGE ELEMENTS */
+#lion {
+    width: 260px;
+    margin-top: 20px;
+    transition: 0.5s;
+}
+
+#redEnvelope {
+    width: 180px;
+    margin-top: 20px;
+    display: none;
+    transition: 0.5s;
+}
+
+#musicBtn {
+    margin-top: 15px;
+    padding: 10px 25px;
+    background: gold;
+    border: none;
+    border-radius: 8px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#starBtn {
+    margin-top: 20px;
+    width: 150px;
+    height: 150px;
+    background: red;
+    border-radius: 50%;
+    color: yellow;
+    font-size: 40px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* INFO BOXES */
+.infoBox, .thanksBox {
+    width: 85%;
+    max-width: 600px;
+    background: white;
+    margin: 25px auto;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.hidden { display: none !important; }
+
+#resultText {
+    font-size: 38px;
+    color: red;
+    margin-top: 20px;
+    display: none;
+}
+
+#playAgain {
+    padding: 12px 30px;
+    background: red;
+    color: white;
+    font-size: 22px;
+    border: none;
+    border-radius: 10px;
+    margin-top: 20px;
+    display: none;
+    cursor: pointer;
+}
+
+/* FIREWORK CANVAS */
+.fireworks {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    display: none;
+}
+</style>
+</head>
+
+<body>
+
+<h1 class="bling-gold shine">NEW YEAR'S AWARD</h1>
+
+<img id="lion" class="bling shine" src="lion.png">
+
+<button id="musicBtn">Play Music</button>
+
+<button id="starBtn">★</button>
+
+<!-- GAME INFO -->
+<div class="infoBox" id="infoBox">
+    <h2 class="bling-gold">GAME: NEW YEAR'S AWARD</h2>
+    <p>VALID GAME TIME: 3 AM - 3 PM (NGT)</p>
+    <p>Play Hours: 3 AM - 3 PM (NGT)</p>
+    <p>1 Transaction = 1 Bag!</p>
+    <p>Complete 6 Bag to CLAIM your New Year's Award</p>
+    <p>"Don't wait - collect, play, and grab your festive surprise now!"</p>
+    <p>Reward: Up to N2,500!</p>
+    <p>Any gift card or transfer trading counts!</p>
+</div>
+
+<img id="redEnvelope" class="bling shine" src="envelope.png">
+
+<div id="resultText"></div>
+
+<!-- THANK YOU BOX -->
+<div class="thanksBox hidden" id="thanksBox">
+    <h2 class="bling-red shine">THANK YOU FOR JOINING OUR GAME!</h2>
+    <p>Look forward to our next fun trading — grab your chance and enjoy the Happy New Year moments !!</p>
+</div>
+
+<button id="playAgain">PLAY AGAIN</button>
+
+<canvas class="fireworks" id="fireworkCanvas"></canvas>
+
+<audio id="bgMusic" loop>
+    <source src="music.mp3" type="audio/mp3">
+</audio>
+
+<script>
+let music = document.getElementById("bgMusic");
+let musicBtn = document.getElementById("musicBtn");
+let lion = document.getElementById("lion");
+let envelope = document.getElementById("redEnvelope");
+let starBtn = document.getElementById("starBtn");
+let resultText = document.getElementById("resultText");
+let infoBox = document.getElementById("infoBox");
+let thanksBox = document.getElementById("thanksBox");
+let playAgain = document.getElementById("playAgain");
+let fireworks = document.getElementById("fireworkCanvas");
+
+/* MUSIC BUTTON */
+musicBtn.onclick = function() {
+    if (music.paused) {
+        music.play();
+        musicBtn.innerText = "Stop Music";
+    } else {
+        music.pause();
+        musicBtn.innerText = "Play Music";
+    }
+};
+
+/* REWARD PICK */
+function pickReward() {
+    let r = Math.random();
+    if (r < 0.05) return "2500 Naira";
+    if (r < 0.15) return "1000 Naira";
+    if (r < 0.20) return "Next time";
+    let arr = ["800 Naira", "500 Naira", "700 Naira"];
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
+/* STAR BUTTON – OPEN ENVELOPE */
+starBtn.onclick = function() {
+    infoBox.classList.add("hidden");
+    lion.style.opacity = "0";
+
+    setTimeout(() => {
+        envelope.style.display = "block";
+        envelope.style.transform = "scale(1.6)";
+    }, 400);
+
+    let reward = pickReward();
+
+    setTimeout(() => {
+        resultText.innerHTML = reward;
+        resultText.style.display = "block";
+        thanksBox.classList.remove("hidden");
+
+        if (reward !== "Next time") {
+            fireworks.style.display = "block";
+            startFireworks();
+        }
+    }, 900);
+
+    setTimeout(() => {
+        playAgain.style.display = "inline-block";
+    }, 1200);
+};
+
+/* PLAY AGAIN */
+playAgain.onclick = function() {
+    fireworks.style.display = "none";
+    lion.style.opacity = "1";
+    envelope.style.display = "none";
+    envelope.style.transform = "scale(1)";
+    thanksBox.classList.add("hidden");
+    resultText.style.display = "none";
+    infoBox.classList.remove("hidden");
+    playAgain.style.display = "none";
+};
+
+/* FIREWORKS ANIMATION */
+function startFireworks() {
+    let ctx = fireworks.getContext("2d");
+    fireworks.width = window.innerWidth;
+    fireworks.height = window.innerHeight;
+
+    let particles = [];
+    for (let i = 0; i < 80; i++) {
+        particles.push({
+            x: fireworks.width / 2,
+            y: fireworks.height / 2,
+            angle: Math.random() * 2 * Math.PI,
+            speed: Math.random() * 4 + 2,
+            radius: Math.random() * 3 + 2,
+            alpha: 1
+        });
+    }
+
+    function animate() {
+        ctx.clearRect(0,0, fireworks.width, fireworks.height);
+        particles.forEach(p => {
+            p.x += Math.cos(p.angle) * p.speed;
+            p.y += Math.sin(p.angle) * p.speed;
+            p.alpha -= 0.01;
+            ctx.globalAlpha = p.alpha;
+            ctx.fillStyle = "red";
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fill();
+        });
+        particles = particles.filter(p => p.alpha > 0);
+        if (particles.length > 0) requestAnimationFrame(animate);
+    }
+    animate();
+}
+</script>
+
+</body>
+</html>
